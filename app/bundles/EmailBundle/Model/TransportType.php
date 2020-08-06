@@ -17,6 +17,7 @@ class TransportType
      */
     private $transportTypes = [
         'mautic.transport.amazon'       => 'mautic.email.config.mailer_transport.amazon',
+        'mautic.transport.amazon_api'   => 'mautic.email.config.mailer_transport.amazon_api',
         'mautic.transport.elasticemail' => 'mautic.email.config.mailer_transport.elasticemail',
         'gmail'                         => 'mautic.email.config.mailer_transport.gmail',
         'mautic.transport.mandrill'     => 'mautic.email.config.mailer_transport.mandrill',
@@ -41,6 +42,7 @@ class TransportType
      */
     private $showPort = [
         'smtp',
+        'mautic.transport.amazon',
     ];
 
     /**
@@ -51,6 +53,7 @@ class TransportType
         'mautic.transport.sendgrid',
         'mautic.transport.elasticemail',
         'mautic.transport.amazon',
+        'mautic.transport.amazon_api',
         'mautic.transport.postmark',
         'gmail',
         // smtp is left out on purpose as the auth_mode will manage displaying this field
@@ -64,6 +67,7 @@ class TransportType
         'mautic.transport.sendgrid',
         'mautic.transport.elasticemail',
         'mautic.transport.amazon',
+        'mautic.transport.amazon_api',
         'mautic.transport.postmark',
         'gmail',
         // smtp is left out on purpose as the auth_mode will manage displaying this field
@@ -147,6 +151,31 @@ class TransportType
     /**
      * @return string
      */
+    public function getServiceDoNotNeedHost()
+    {
+        $tempTransports = $this->transportTypes;
+        unset($tempTransports['mautic.transport.amazon']);
+
+        $transports       = array_keys($tempTransports);
+        $doNotRequireHost = array_diff($transports, $this->showHost);
+        return $this->getString($doNotRequireHost);
+    }
+
+    /**
+     * @return string
+     */
+    public function getServiceDoNotNeedAmazonApiRegion()
+    {
+        $tempTransports = $this->transportTypes;
+        unset($tempTransports['mautic.transport.amazon_api']);
+
+        $doNotRequireRegion = array_keys($tempTransports);
+        return $this->getString($doNotRequireRegion);
+    }
+
+    /**
+     * @return string
+     */
     public function getServiceDoNotNeedUser()
     {
         // The auth_mode data-show-on will handle smtp
@@ -201,6 +230,14 @@ class TransportType
     public function getAmazonService()
     {
         return '"mautic.transport.amazon"';
+    }
+
+    /**
+     * @return string
+     */
+    public function getAmazonApiService()
+    {
+        return '"mautic.transport.amazon_api"';
     }
 
     /**
